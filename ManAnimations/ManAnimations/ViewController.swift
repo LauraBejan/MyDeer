@@ -42,8 +42,23 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         node.scale = SCNVector3(0.2, 0.2, 0.2)
 
         sceneView.scene.rootNode.addChildNode(node)
+        createAnimations(with: "dance", sceneName: "art.scnassets/SalsaDancingFixed", animationIdentifier: "idleFixed")
+    }
 
+    func createAnimations(with key: String, sceneName: String, animationIdentifier: String) {
+        let sceneURL = Bundle.main.url(forResource: sceneName, withExtension: "dae")
+        let sceneSource = SCNSceneSource(url: sceneURL!, options: nil)
 
+        if let animationObject = sceneSource?.entryWithIdentifier(animationIdentifier, withClass: CAAnimation.self) {
+            animationObject.repeatCount = 1
+            animationObject.fadeInDuration = CGFloat(1)
+            animationObject.fadeOutDuration = CGFloat(0.5)
+            animations[key] = animationObject
+        }
+    }
+
+    func playAnimation(key: String) {
+        sceneView.scene.rootNode.addAnimation(animations[key]!, forKey: key)
     }
     
     override func viewWillAppear(_ animated: Bool) {
